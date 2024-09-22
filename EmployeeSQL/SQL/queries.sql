@@ -6,11 +6,13 @@ SQL Challenge Queries
 */
 
 -- 1. List the employee number, last name, first name, sex, and salary of each employee.
+
    SELECT e.emp_no, e.last_name, e.first_name, e.sex, s.salary 
      FROM employees AS e
 LEFT JOIN salaries AS s ON e.emp_no = s.emp_no;
 
 -- 2. List the first name, last name, and hire date for the employees who were hired in 1986.
+
 SELECT first_name, last_name, hire_date
   FROM employees
  WHERE EXTRACT(YEAR FROM hire_date) = 1986;
@@ -41,19 +43,24 @@ LEFT JOIN departments AS d
 SELECT first_name, last_name, sex
   FROM employees
  WHERE first_name = 'Hercules'
-   AND last_name LIKE 'B%'
+   AND last_name LIKE 'B%';
 
 -- 6. List each employee in the Sales department, including their employee number, last name, and first name.
 
 --    Sub-select method
+
 SELECT emp_no, last_name, first_name
   FROM employees
- WHERE emp_no IN (SELECT emp_no 
-				   FROM dept_emp
-				  WHERE dept_no = (SELECT dept_no 
-					 			     FROM departments
-						 		    WHERE dept_name = 'Sales'));
+ WHERE emp_no IN 
+  (SELECT emp_no 
+     FROM dept_emp
+    WHERE dept_no = 
+    (SELECT dept_no 
+       FROM departments
+      WHERE dept_name = 'Sales'));
+
 --    Join method
+
    SELECT e.emp_no, e.last_name, e.first_name
      FROM employees AS e
 LEFT JOIN dept_emp AS de ON e.emp_no = de.emp_no
@@ -64,17 +71,20 @@ LEFT JOIN departments AS d ON d.dept_no = de.dept_no
 --    first name, and department name.
 
 --	  Sub-select method
+
     SELECT e.emp_no, e.last_name, e.first_name, t.dept_name
       FROM employees AS e
-INNER JOIN (SELECT d.dept_no, d.dept_name, de.emp_no 
-     		 FROM departments AS d
-		LEFT JOIN dept_emp AS de
-	   		   ON d.dept_no = de.dept_no
-			WHERE dept_name = 'Development' OR dept_name = 'Sales') AS t
+INNER JOIN
+    (SELECT d.dept_no, d.dept_name, de.emp_no 
+       FROM departments AS d
+  LEFT JOIN dept_emp AS de
+         ON d.dept_no = de.dept_no
+      WHERE dept_name = 'Development' OR dept_name = 'Sales') AS t
         ON t.emp_no = e.emp_no
   ORDER BY e.emp_no;
-
+  
 --	  Join method
+
    SELECT e.emp_no, e.last_name, e.first_name, d.dept_name
      FROM employees AS e
 LEFT JOIN dept_emp AS de
